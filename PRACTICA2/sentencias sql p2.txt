@@ -1,0 +1,35 @@
+CREATE TABLE Personal (
+	id_personal varchar2(4) PRIMARY KEY, 
+	Telefono varchar2(12) UNIQUE NOT NULL CONSTRAINT Telefono_correcto CHECK (REGEXP_LIKE(Telefono, ‘(\+)?[0-9]^')),
+	correo varchar2(50) UNIQUE NOT NULL CONSTRAINT corr_valido CHECK (REGEXP_LIKE(correo '[a-z.A-Z.0-9\.]{1,48}@[a-z.A-Z.0-9\.]{1,48}')),
+	nombre varchar2(30),
+	apellidos varchar2(60)
+);
+CREATE TABLE Pista(
+    	id_pista varchar2(4) PRIMARY KEY, 
+	nombre varchar2(30),
+	capacidad number(4)
+);
+CREATE TABLE Trabaja(
+	anio int CHECK (anio >= 1000 AND anio <= 9999) REFERENCES Edicion(anio),
+    	id_personal varchar2(4) REFERENCES Personal(id_personal), 
+	salario_por_hora float,
+	PRIMARY KEY (anio, id_personal)
+);
+CREATE TABLE Asignado(
+    	id_pista varchar2(4),
+	anio int CHECK (anio >= 1000 AND anio <= 9999),
+    	id_personal varchar2(4),
+	fecha_inicio DATE,
+	fecha_fin DATE,
+	PRIMARY KEY(id_pista, anio, id_personal, fecha_inicio, fecha_fin),
+	FOREIGN KEY(anio, id_personal) REFERENCES Trabaja(anio, id_personal)
+);
+
+CREATE TABLE Contraoferta_rechazada(
+    	id_contraoferta varchar2(4) PRIMARY KEY,
+	fecha DATE,
+	FOREIGN KEY(id_contraoferta) REFERENCES Contraoferta(id_contraoferta)
+);
+
+
